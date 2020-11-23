@@ -1,4 +1,7 @@
-//var dataset = [[6,5], [5,4],[8,6],[7,5],[3,3],[3,2],[7,9],[2,5]];
+var data = [
+    {name: 'Entertainment', number: 12 },
+    {name: 'Educational', number: 4 },
+];
 d3.select('body')
   .append('svg')
   .attr('width', 500)
@@ -14,51 +17,45 @@ var margin = {top: 50, right: 20, bottom: 350, left: 30},
 var y = d3.scaleLinear()
     .domain([0,15])
     .range([height,0])
-//let xScale = d3.scaleLinear()
-  //.domain([0,20])
-  //.range([0,200])
-let yScale = d3.scaleLinear()
+var x = d3.scaleBand()
+    .domain(d3.range(data.length))
+    .range([margin.left, 250])
+    .padding(0.6);
+
+let xScale = d3.scaleLinear()
   .domain([0,15])
-  .range([100,0])
+  .range([0,100])
+// let yScale = d3.scaleLinear()
+//   .domain([0,15])
+//   .range([100,0])
  
-d3.csv("./Data.csv").then( (forage) => {
-    console.log(forage)
-    chart.append('g')//first bar graph
+
+chart.append('g')//first bar graph
     .selectAll('rect')
-    .data(forage)
+    .data(data.sort((a, b) => d3.descending(a.number,b.number)))
     .enter()
         .append('rect')
-        .attr('x', d => -35 + 40*d.ID)
-        .attr('y',d => yScale(d.data1))
-        .attr('width',10)
-        .attr('height',d =>height - y(d.data1))
-        .style('fill','black')
+        .attr('x', (d, i)=> x(i))
+        .attr('y',d => y(d.number))
+        .attr('width',35)
+        .attr('height',d =>height - y(d.number))
+        .style('fill','Black')
     
-     chart.append('g')//second bar graph
-     .selectAll('rect')
-     .data(forage)
-     .enter()
-         .append('rect')
-         .attr('x', d => -25 + 40*d.id)
-         .attr('y',d => yScale(d.data2))
-         .attr('width',10)
-         .attr('height',d =>height - y(d.data2))
-         .style('fill','Red')
-     
-    let xLabels = chart.append('g')
-         .selectAll('text')
-         .data(forage)
+
+    // let xLabels = chart.append('g')
+    //      .selectAll('text')
+    //      .data(data)
   
-      xLabels
-         .enter()
-              .append('text')
-              .attr('font-size','12px')
-              .attr('font-family','Arial')
-              .style("text-anchor","middle")
-              .attr('transform', d => `translate(${-25 + 40*d.id}, 120)`) // , rotate(-30)
-              .attr('x', 0)
-              .attr('y', 0)
-              .text(d => { return [d.Days] } )
+    //   xLabels
+    //      .enter()
+    //           .append('text')
+    //           .attr('font-size','12px')
+    //           .attr('font-family','Arial')
+    //           .style("text-anchor","middle")
+    //           .attr('transform', d => `translate(${-25 + 40*d[0]}, 120)`) // , rotate(-30)
+    //           .attr('x', 0)
+    //           .attr('y', 0)
+    //           .text(d => d )
       // xLabels 
       //         .selectAll('text')
       //         .data(forage)
@@ -71,26 +68,38 @@ let name= chart.append('text')
       .attr('font-size','12px')
       .attr('fill','black')
 let name2= chart.append('text')
-    .attr('transform', 'translate(350,60) rotate(90)')
+    .attr('transform', 'translate(0,60) rotate(270)')
       .text('Total Videos')
       .attr('font-size','12px')
       .style("text-anchor","middle")
       .attr('fill','black')
 
 let stickers = chart.append('text')
-        .text("Entertainment")
-        .attr('x', 280)
+        .text("12")
+        .attr('x', 90)
         .attr('y', 15)
         .style('fill', 'black')
-        .attr('font-size','8px')
+        .attr('font-size','12px')
 let stickers2 = chart.append('text')
-        .text("Educational")
-        .attr('x', 280)
-        .attr('y', 30)
-        .style('fill', 'red')
-        .attr('font-size','8px')
-})
-
-chart.append('g')
+        .text("4")
+        .attr('x', 180)
+        .attr('y', 60)
+        .style('fill', 'black')
+        .attr('font-size','12px')
+function yAxis(g) {
+        g.attr("transform", `translate(${margin.left}, 0)`)
+         .call(d3.axisLeft(y).ticks(null, data.format))
+         .attr("font-size", '10px')
+          }
+          
+function xAxis(g) {
+              g.attr("transform", `translate(0,${height})`)
+              g.call(d3.axisBottom(x).tickFormat(i => data[i].name))
+              .attr("font-size", '10px')
+          }
+//chart.append('g')
     //.attr('transform', 'translate(10, 100)')
-    .call(d3.axisLeft(yScale).ticks(5))
+    //.call(d3.axisLeft(y).ticks(5))
+    chart.append("g").call(xAxis);
+    chart.append("g").call(yAxis);
+    chart.node();
