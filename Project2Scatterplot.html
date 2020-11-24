@@ -10,9 +10,9 @@
 <script>
 
 // Set the dimensions and margins of the graph
-var margin = {top: 10, right: 100, bottom: 30, left: 30},
-    width = 460 - margin.left - margin.right,
-    height = 380 - margin.top - margin.bottom;
+var margin = {top: 50, right: 100, bottom: 50, left: 50},
+    width = 800 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
 
 var svg = d3.select("#my_data")
@@ -27,7 +27,7 @@ var svg = d3.select("#my_data")
 d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/main/Data.csv", function(data) {
 
     // List of groups in the select area
-    var category = ["VidLength", "CombLength", "AvgLength"]
+    var category = ["VideoLength", "CombinedLength", "AverageLength"]
     var value = d3.select('#my_data')
     // Add the options to the button
     d3.select("#selectButton")
@@ -65,7 +65,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
         .datum(data)
         .attr("d", d3.line()
           .x(function(d) { return x(+d.ID) })
-          .y(function(d) { return y(+d.VidLength) })
+          .y(function(d) { return y(+d.VideoLength) })
         )
         .attr("stroke", "#2A9D8F")
         .style("stroke-width", 2)
@@ -104,7 +104,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
       .append('circle')
         .attr('class','myCircle')
         .attr("cx", function(d) { return x(+d.ID) })
-        .attr("cy", function(d) { return y(+d.VidLength) })
+        .attr("cy", function(d) { return y(+d.VideoLength) })
         .attr("r", 4)
         .style("fill", "#FF2D00")
         .on('mouseover',mouseover)
@@ -159,18 +159,23 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
         update(selectedOption)
     })
     let name= svg.append('text')
-    .attr('transform', 'translate(180,370)')
-      .text('Video ID')
+    .attr('transform', 'translate(300,750)')
+      .text('Video Number')
       .style("text-anchor","middle")
-      .attr('font-size','12px')
+      .attr('font-size','20px')
       .attr('fill','black')
     let name2= svg.append('text')
-    .attr('transform', 'translate(-10,160) rotate(270)')
-      .text('Length in Mins')
-      .attr('font-size','12px')
+    .attr('transform', 'translate(0,300) rotate(270)')
+      .text('Length in Minutes')
+      .attr('font-size','20px')
       .style("text-anchor","middle")
       .attr('fill','black')
-
+	let name3= svg.append('text')
+    .attr('transform', 'translate(300,0)')
+      .text('Youtube Videos Watched')
+      .style("text-anchor","middle")
+      .attr('font-size','20px')
+      .attr('fill','black')
 })
 
 
