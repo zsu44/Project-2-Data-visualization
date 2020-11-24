@@ -28,7 +28,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
 
     // List of groups in the select area
     var category = ["VidLength", "CombLength", "AvgLength"]
-
+    var value = d3.select('#my_data')
     // Add the options to the button
     d3.select("#selectButton")
       .selectAll('myOptions')
@@ -49,7 +49,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
 
     //  Y axis
     var y = d3.scaleLinear()
-      .domain( [0,40])
+      .domain( [0,250])
       .range([ height, 0 ]);
     svg.append("g")
        .attr("transform", `translate(${margin.left}, 0)`)  
@@ -70,17 +70,47 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
         .attr("stroke", "#2A9D8F")
         .style("stroke-width", 2)
         .style("fill", "none")
+    var Tooltip = d3.select("#my_data")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px")
 
-    // Initialize dots with group a
+      // Three function that change the tooltip when user hover / move / leave a cell
+      var mouseover = function(d) {
+        Tooltip
+          .style("opacity", 1)
+      }
+      var mousemove = function(d) {
+        Tooltip
+          .html("Exact value: " + d.value)
+          .style("left", (d3.mouse(this)[0]+70) + "px")
+          .style("top", (d3.mouse(this)[1]) + "px")
+      }
+      var mouseleave = function(d) {
+        Tooltip
+          .style("opacity", 0)
+      }
+    
+  // Initialize dots with group a
     var dot = svg
       .selectAll('circle')
       .data(data)
       .enter()
       .append('circle')
+        .attr('class','myCircle')
         .attr("cx", function(d) { return x(+d.ID) })
         .attr("cy", function(d) { return y(+d.VidLength) })
         .attr("r", 4)
         .style("fill", "#FF2D00")
+        .on('mouseover',mouseover)
+        .on('mousemove',mousemove)
+        .on('mouseleave',mouseleave)
+    
 
 
     // Function that updates the chart
@@ -88,7 +118,19 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
 
       // Create new data with the selection?
       var dataFilter = data.map(function(d){return {ID: d.ID, value:d[selectedGroup]} })
-
+      // .append('g')
+      // .data(dataFilter)
+    //   console.log(function(d){return (d.value)})
+    //   var MaxNumber = Math.max(function(d){return (d.value)})
+    //   console.log(MaxNumber)
+    //   var y = d3.scaleLinear()
+    //   // .data(selectedGroup)
+    //   .domain( [0,MaxNumber])
+    //   .range([ height, 0 ]);
+    // svg.append("g")
+    //    .attr("transform", `translate(${margin.left}, 0)`)  
+    //    .call(d3.axisLeft(y));
+       
       // Give these new data to update line
       line
           .datum(dataFilter)
@@ -118,30 +160,16 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
     })
     let name= svg.append('text')
     .attr('transform', 'translate(180,370)')
-      .text('Video Number')
+      .text('Video ID')
       .style("text-anchor","middle")
-      .attr('font-size','15px')
+      .attr('font-size','12px')
       .attr('fill','black')
     let name2= svg.append('text')
     .attr('transform', 'translate(-10,160) rotate(270)')
-      .text('Length in Minutes')
-      .attr('font-size','15px')
+      .text('Length in Mins')
+      .attr('font-size','12px')
       .style("text-anchor","middle")
       .attr('fill','black')
-	let name3= svg.append('text')
-    .attr('transform', 'translate(180,0)')
-      .text('Youtube Videos Watched')
-      .style("text-anchor","middle")
-      .attr('font-size','15px')
-      .attr('fill','black')
-    const label = svg.append("g")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", 10)
-    .selectAll("g")
-    .data(data)
-    .join("g")
-      .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
-      .attr("opacity", 0);
 
 })
 
