@@ -42,7 +42,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
     //  X axis
     var x = d3.scaleLinear()
       .domain([0,16])
-      .range([30, width]);
+      .range([50, width]);
     svg.append("g")
        .attr("transform", `translate(0,${height})`)
        .call(d3.axisBottom(x));
