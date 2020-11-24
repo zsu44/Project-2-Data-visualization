@@ -4,9 +4,7 @@
 <script src="https://d3js.org/d3.v4.js"></script>
 
 <select id="selectButton"></select>
-
-<div id="my_dataviz"></div>
-
+<div id="my_data"></div>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 <script>
@@ -14,10 +12,10 @@
 // Set the dimensions and margins of the graph
 var margin = {top: 10, right: 100, bottom: 30, left: 30},
     width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    height = 380 - margin.top - margin.bottom;
 
-// Append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
+
+var svg = d3.select("#my_data")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -28,32 +26,37 @@ var svg = d3.select("#my_dataviz")
 //Read the data
 d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/main/Data.csv", function(data) {
 
-    // List of groups
-    var allGroup = ["VidLength", "CombLength", "AvgLength"]
+    // List of groups in the select area
+    var category = ["VidLength", "CombLength", "AvgLength"]
 
     // Add the options to the button
     d3.select("#selectButton")
       .selectAll('myOptions')
-     	.data(allGroup)
+     	.data(category)
       .enter()
     	.append('option')
-      .text(function (d) { return d; }) // text showed in the menu
-      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+      .text(function (d) { return d; }) 
+      .attr("value", function (d) { return d; })
+       
 
-    // Add X axis
+    //  X axis
     var x = d3.scaleLinear()
       .domain([0,16])
-      .range([ 0, width ]);
+      .range([30, width]);
     svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+       .attr("transform", `translate(0,${height})`)
+       .call(d3.axisBottom(x));
 
-    // Add Y axis
+    //  Y axis
     var y = d3.scaleLinear()
       .domain( [0,40])
       .range([ height, 0 ]);
     svg.append("g")
-      .call(d3.axisLeft(y));
+       .attr("transform", `translate(${margin.left}, 0)`)  
+       .attr("font-size", '18px')
+       .call(d3.axisLeft(y));
+       
+
 
     // Initialize line with group a
     var line = svg
@@ -64,7 +67,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
           .x(function(d) { return x(+d.ID) })
           .y(function(d) { return y(+d.VidLength) })
         )
-        .attr("stroke", "black")
+        .attr("stroke", "#2A9D8F")
         .style("stroke-width", 2)
         .style("fill", "none")
 
@@ -90,15 +93,18 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
       line
           .datum(dataFilter)
           .transition()
-          .duration(1000)
+          .duration(1050)
+        //   .ease(d3.easeLinear)
+        //   .attr("stroke-dasharray",'${1}.${1}')
           .attr("d", d3.line()
             .x(function(d) { return x(+d.ID) })
             .y(function(d) { return y(+d.value) })
           )
+          
       dot
         .data(dataFilter)
         .transition()
-        .duration(1000)
+        .duration(1050)
           .attr("cx", function(d) { return x(+d.ID) })
           .attr("cy", function(d) { return y(+d.value) })
     }
@@ -110,6 +116,32 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
         // Run the updateChart function with this selected option
         update(selectedOption)
     })
+    let name= svg.append('text')
+    .attr('transform', 'translate(180,370)')
+      .text('Video Number')
+      .style("text-anchor","middle")
+      .attr('font-size','15px')
+      .attr('fill','black')
+    let name2= svg.append('text')
+    .attr('transform', 'translate(-10,160) rotate(270)')
+      .text('Length in Minutes')
+      .attr('font-size','15px')
+      .style("text-anchor","middle")
+      .attr('fill','black')
+	let name3= svg.append('text')
+    .attr('transform', 'translate(180,0)')
+      .text('Youtube Videos Watched')
+      .style("text-anchor","middle")
+      .attr('font-size','15px')
+      .attr('fill','black')
+    const label = svg.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 10)
+    .selectAll("g")
+    .data(data)
+    .join("g")
+      .attr("transform", d => `translate(${x(d.x)},${y(d.y)})`)
+      .attr("opacity", 0);
 
 })
 
