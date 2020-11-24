@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<!-- Initialize a select button -->
 <select id="selectButton"></select>
 
-<!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
-<!-- Color Scale -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
 
 <script>
 
-// set the dimensions and margins of the graph
+// Set the dimensions and margins of the graph
 var margin = {top: 10, right: 100, bottom: 30, left: 30},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
+// Append the svg object to the body of the page
 var svg = d3.select("#my_dataviz")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -33,10 +28,10 @@ var svg = d3.select("#my_dataviz")
 //Read the data
 d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/main/Data.csv", function(data) {
 
-    // List of groups (here I have one group per column)
+    // List of groups
     var allGroup = ["VidLength", "CombLength", "AvgLength"]
 
-    // add the options to the button
+    // Add the options to the button
     d3.select("#selectButton")
       .selectAll('myOptions')
      	.data(allGroup)
@@ -45,7 +40,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
       .text(function (d) { return d; }) // text showed in the menu
       .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-    // Add X axis --> it is a date format
+    // Add X axis
     var x = d3.scaleLinear()
       .domain([0,16])
       .range([ 0, width ]);
@@ -85,7 +80,7 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
         .style("fill", "#FF2D00")
 
 
-    // A function that update the chart
+    // Function that updates the chart
     function update(selectedGroup) {
 
       // Create new data with the selection?
@@ -110,9 +105,9 @@ d3.csv("https://raw.githubusercontent.com/zsu44/Project-2-Data-visualization/mai
 
     // When the button is changed, run the updateChart function
     d3.select("#selectButton").on("change", function(d) {
-        // recover the option that has been chosen
+        // Recover the option that has been chosen
         var selectedOption = d3.select(this).property("value")
-        // run the updateChart function with this selected option
+        // Run the updateChart function with this selected option
         update(selectedOption)
     })
 
